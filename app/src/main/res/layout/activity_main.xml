@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_weight="10"
     tools:context=".MainActivity">
 
     <androidx.cardview.widget.CardView
@@ -13,9 +14,12 @@
         android:layout_margin="10dp"
         app:cardBackgroundColor="#444444"
         app:cardCornerRadius="15dp"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout2"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.021">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -23,7 +27,7 @@
             android:orientation="horizontal"
             android:padding="5dp"
             android:visibility="visible"
-            android:weightSum="2">
+            android:weightSum="1">
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerView"
@@ -69,8 +73,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/cardView"
-        app:layout_constraintVertical_bias="0.023">
+        app:layout_constraintTop_toTopOf="parent">
 
         <Button
             android:id="@+id/button"
@@ -101,12 +104,20 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_margin="10dp"
-        app:cardBackgroundColor="#e0e0e0"
-        app:cardCornerRadius="15dp"
+        android:background="@drawable/outline"
+        app:cardBackgroundColor="#FFFFFF"
         app:cardElevation="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout2" />
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout2">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/outline"
+            android:orientation="vertical"
+            android:weightSum="1"></LinearLayout>
+    </androidx.cardview.widget.CardView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
