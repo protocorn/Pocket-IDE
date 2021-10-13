@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Pocket IDE</string>
+    <string name="clear_screen">Clear Screen</string>
+    <string name="compile">Compile</string>
 </resources>
