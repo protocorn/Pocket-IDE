@@ -47,7 +47,7 @@
             <EditText
                 android:id="@+id/editTextTextMultiLine"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="312dp"
                 android:layout_marginLeft="5dp"
                 android:background="#444444"
                 android:ems="10"
@@ -113,7 +113,7 @@
         app:layout_constraintTop_toBottomOf="@+id/linearLayout2">
 
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="402dp"
             android:layout_height="match_parent"
             android:background="@drawable/outline"
             android:orientation="vertical"
