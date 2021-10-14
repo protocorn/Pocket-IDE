@@ -41,13 +41,13 @@
                 android:layout_width="1dp"
                 android:layout_height="match_parent"
                 android:layout_marginLeft="2dp"
-                android:background="?android:attr/listDivider"
-                android:backgroundTint="#FFFFFF" />
+                android:background="@color/white"
+                android:backgroundTint="#bbbbbb" />
 
             <EditText
                 android:id="@+id/editTextTextMultiLine"
                 android:layout_width="match_parent"
-                android:layout_height="308dp"
+                android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
                 android:background="#444444"
                 android:ems="10"
@@ -117,7 +117,29 @@
             android:layout_height="match_parent"
             android:background="@drawable/outline"
             android:orientation="vertical"
-            android:weightSum="1"></LinearLayout>
+            android:padding="5dp"
+            android:weightSum="1">
+
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scrollbarSize="0dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="5dp">
+
+                    <TextView
+                        android:id="@+id/textView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+            </ScrollView>
+
+        </LinearLayout>
+
     </androidx.cardview.widget.CardView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
