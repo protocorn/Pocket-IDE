@@ -1,5 +1,7 @@
 package com.example.pocketide;
 
+import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.text.Editable;
@@ -100,16 +102,14 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 final_line_count = editText.getLineCount();
-
-               /* if (editText.getText().toString().contains("int") == true) {
-                    String str = editText.getText().toString().replaceAll("int", "<font color='red'>int</font>");
-
-                    editText.setText(Html.fromHtml(str), TextView.BufferType.SPANNABLE);
-                }*/
             }
 
             @Override
             public void afterTextChanged(Editable s) {
+                    /*if (s.toString().contains("int")) {
+                        String str = editText.getText().toString().replaceAll("int","<font color='red'>int</font>");
+                        editText.setText(Html.fromHtml(str, Html.FROM_HTML_MODE_LEGACY));
+                    }*/
                 if (initial_line_count != final_line_count && initial_line_count < final_line_count) {
                     //adding number of lines to the list
                     count.add(String.valueOf(final_line_count));
