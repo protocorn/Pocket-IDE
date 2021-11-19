@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -37,9 +38,25 @@ public class file_saver extends AppCompatActivity {
                 save = findViewById(R.id.btn_okay);
                 c = findViewById(R.id.cprogram);
                 cpp = findViewById(R.id.cpp);
-                file_name = findViewById(R.id.txt_input);
+                java = findViewById(R.id.java);
+               save.setOnClickListener(new View.OnClickListener() {
+                   @Override
+                   public void onClick(View view) {
+                       if(c.isChecked()){}
+                       else if(java.isChecked()){}
+                       else if(cpp.isChecked()){}
+                       else {
+                           Toast.makeText(file_saver.this, "please select one language", Toast.LENGTH_SHORT).show();
+                       }
+                   }
+               }) ;
+                cancel.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                     dialog.dismiss();
 
-
+                    }
+                });
                 dialog.show();
             }
         });
