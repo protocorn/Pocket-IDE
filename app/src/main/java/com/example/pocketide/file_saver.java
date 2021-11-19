@@ -46,6 +46,7 @@ public class file_saver extends AppCompatActivity {
                    @Override
                    public void onClick(View view) {
                        String filename = file_name.getText().toString();
+
                        if (filename.isEmpty()) {
                            Toast.makeText(file_saver.this, "Filename cannot be empty", Toast.LENGTH_SHORT).show();
                        } else {
