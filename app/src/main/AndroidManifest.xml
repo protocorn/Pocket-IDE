@@ -14,8 +14,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.PocketIDE">
         <activity
-            android:name=".file_saver"
-            android:exported="false" >
+            android:name=".file_saver">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
