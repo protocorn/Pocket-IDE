@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
         compile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-              //  execute(new String[]{editText.getText().toString()}, new String[]{""});
+                execute(new String[]{editText.getText().toString()}, new String[]{""});
                 try {
                     File dir = Environment.getExternalStorageDirectory();
                     String path = dir.getAbsolutePath();
@@ -71,15 +71,8 @@ public class MainActivity extends AppCompatActivity {
                     outputStream.writeBytes("exit\n");
                     outputStream.flush();
                     su.waitFor();
-                }catch(IOException e){
-                    try {
-                        throw new Exception(e);
-                    } catch (Exception exception) {
-                        output.setText(e.toString());
-                        exception.printStackTrace();
-                    }
                 }
-                catch(InterruptedException e){
+                catch(IOException | InterruptedException e){
                     try {
                         throw new Exception(e);
                     } catch (Exception exception) {
