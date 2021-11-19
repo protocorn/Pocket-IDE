@@ -90,6 +90,7 @@ public class file_saver extends AppCompatActivity {
                     public void onClick(View view) {
                      dialog.dismiss();
 
+
                     }
                 });
                 dialog.show();
