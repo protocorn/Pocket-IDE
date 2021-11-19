@@ -36,21 +36,19 @@ public class file_saver extends AppCompatActivity {
                 EditText file_name;
                 Button cancel, save;
                 RadioButton c,cpp,java;
-                file_name = findViewById(R.id.txt_input);
-                cancel = findViewById(R.id.btn_cancel);
-                save = findViewById(R.id.btn_okay);
-                c = findViewById(R.id.cprogram);
-                cpp = findViewById(R.id.cpp);
-                java = findViewById(R.id.java);
-
+                file_name = dialog.findViewById(R.id.txt_input);
+                cancel = dialog.findViewById(R.id.btn_cancel);
+                save = dialog.findViewById(R.id.btn_okay);
+                c = dialog.findViewById(R.id.cprogram);
+                cpp = dialog.findViewById(R.id.cpp);
+                java = dialog.findViewById(R.id.java_p);
                save.setOnClickListener(new View.OnClickListener() {
                    @Override
                    public void onClick(View view) {
                        String filename = file_name.getText().toString();
                        if (filename.isEmpty()) {
                            Toast.makeText(file_saver.this, "Filename cannot be empty", Toast.LENGTH_SHORT).show();
-                       }
-                       else {
+                       } else {
                            if (c.isChecked()) {
                                File folder = new File(Environment.getExternalStorageDirectory().toString() + "/PocketIDE/C programs");
                                folder.mkdirs();
@@ -59,7 +57,7 @@ public class file_saver extends AppCompatActivity {
                                String extStorageDirectory = folder.toString();
 
                                //Create New file and name it Image2.PNG
-                               File file = new File(extStorageDirectory, filename+".c");
+                               File file = new File(extStorageDirectory, filename + ".c");
                            } else if (java.isChecked()) {
                                File folder = new File(Environment.getExternalStorageDirectory().toString() + "/PocketIDE/Java programs");
                                folder.mkdirs();
@@ -68,7 +66,7 @@ public class file_saver extends AppCompatActivity {
                                String extStorageDirectory = folder.toString();
 
                                //Create New file and name it Image2.PNG
-                               File file = new File(extStorageDirectory, filename+".java");
+                               File file = new File(extStorageDirectory, filename + ".java");
                            } else if (cpp.isChecked()) {
                                File folder = new File(Environment.getExternalStorageDirectory().toString() + "/PocketIDE/C++ programs");
                                folder.mkdirs();
@@ -77,14 +75,13 @@ public class file_saver extends AppCompatActivity {
                                String extStorageDirectory = folder.toString();
 
                                //Create New file and name it Image2.PNG
-                               File file = new File(extStorageDirectory, filename+".cpp");
-                           }
-                           else {
+                               File file = new File(extStorageDirectory, filename + ".cpp");
+                           } else {
                                Toast.makeText(file_saver.this, "please select anyone language", Toast.LENGTH_SHORT).show();
                            }
                        }
                    }
-               }) ;
+               });
                 cancel.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {

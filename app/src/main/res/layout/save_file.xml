@@ -40,7 +40,7 @@
             android:text="C" />
 
         <RadioButton
-            android:id="@+id/java"
+            android:id="@+id/java_p"
             android:layout_width="86dp"
             android:layout_height="wrap_content"
             android:text="Java" />
