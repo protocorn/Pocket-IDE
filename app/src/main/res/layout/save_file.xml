@@ -28,24 +28,21 @@
         android:orientation="vertical">
 
         <RadioButton
-            android:id="@+id/radio_pirates"
+            android:id="@+id/cpp"
             android:layout_width="87dp"
             android:layout_height="wrap_content"
-            android:onClick="onRadioButtonClicked"
             android:text="C++" />
 
         <RadioButton
-            android:id="@+id/radio_ninjas"
-            android:layout_width="87dp"
+            android:id="@+id/cprogram"
+            android:layout_width="84dp"
             android:layout_height="wrap_content"
-            android:onClick="onRadioButtonClicked"
             android:text="C" />
 
         <RadioButton
-            android:id="@+id/radio_ninjas"
+            android:id="@+id/java"
             android:layout_width="86dp"
             android:layout_height="wrap_content"
-            android:onClick="onRadioButtonClicked"
             android:text="Java" />
     </RadioGroup>
 
