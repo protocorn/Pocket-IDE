@@ -12,8 +12,11 @@ import android.widget.RadioButton;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.viewpager.widget.ViewPager;
 
+import com.example.pocketide.adapter.FragmentAdapter;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.tabs.TabLayout;
 
 import java.io.File;
 import java.io.IOException;
@@ -24,6 +27,8 @@ import java.nio.file.attribute.PosixFilePermissions;
 
 public class file_saver extends AppCompatActivity {
     FloatingActionButton add;
+    ViewPager viewPager;
+    TabLayout tabLayout;
 
 
     @Override
@@ -31,6 +36,12 @@ public class file_saver extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_file_saver);
         add=findViewById(R.id.add_file);
+        viewPager=findViewById(R.id.viewpager);
+        tabLayout=findViewById(R.id.tabLayout);
+
+        viewPager.setAdapter(new FragmentAdapter(getSupportFragmentManager()));
+        tabLayout.setupWithViewPager(viewPager);
+
         add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -47,6 +58,8 @@ public class file_saver extends AppCompatActivity {
                 c = dialog.findViewById(R.id.cprogram);
                 cpp = dialog.findViewById(R.id.cpp);
                 java = dialog.findViewById(R.id.java_p);
+
+
                save.setOnClickListener(new View.OnClickListener() {
                    @Override
                    public void onClick(View view) {

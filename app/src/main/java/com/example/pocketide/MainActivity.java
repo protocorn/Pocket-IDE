@@ -100,12 +100,12 @@ public class MainActivity extends AppCompatActivity {
                         output2.append(line).append("\n");
                         p.waitFor();
                     }
+                    String response = output2.toString();
+                    output.setText(response);
                 } catch (IOException | InterruptedException e) {
                     output.setText(e.toString());
                     e.printStackTrace();
                 }
-                String response = output2.toString();
-                //output.setText(response);
             }
         });
 
