@@ -21,11 +21,18 @@ import com.example.pocketide.adapter.NumberAdapter;
 
 import org.stringtemplate.v4.Interpreter;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.DataOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.attribute.PosixFilePermissions;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,8 +51,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         getSupportActionBar().hide();
 
-        compile=findViewById(R.id.compile);
-        output=findViewById(R.id.output);
+        compile = findViewById(R.id.compile);
+        output = findViewById(R.id.output);
 
         count = new ArrayList<>();
 
@@ -58,31 +65,47 @@ public class MainActivity extends AppCompatActivity {
         compile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                execute(new String[]{editText.getText().toString()}, new String[]{""});
+                Process p;
+                StringBuffer output2 = new StringBuffer();
+                String path = Environment.getExternalStorageDirectory().toString();
+                File file = new File(path + "/PocketIDE/JavaPrograms/prog.java");
+                /*file.canExecute();
+                file.canWrite();
+                file.canRead();*/
                 try {
-                    File dir = Environment.getExternalStorageDirectory();
-                    String path = dir.getAbsolutePath();
-                    Process su = Runtime.getRuntime().exec(path+"/MyClass.java");
-                    Toast.makeText(MainActivity.this, "h", Toast.LENGTH_SHORT).show();
-                    output.setText(su.toString());
-                    DataOutputStream outputStream = new DataOutputStream(su.getOutputStream());
-
-                    outputStream.writeBytes("screenrecord --time-limit 10 /sdcard/MyVideo.mp4\n");
-                    outputStream.flush();
-
-                    outputStream.writeBytes("exit\n");
-                    outputStream.flush();
-                    su.waitFor();
+                    FileReader fr = new FileReader(file);
+                    BufferedReader br = new BufferedReader(fr);
+                    do{
+                        String str= br.readLine();
+                        editText.setText(str);
+                    }while(br.readLine()!=null);
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
-                catch(IOException | InterruptedException e){
-                    try {
-                        throw new Exception(e);
-                    } catch (Exception exception) {
-                        output.setText(e.toString());
-                        exception.printStackTrace();
+                try {
+                    FileWriter writer = new FileWriter(file);
+                    writer.append(editText.getText().toString());
+                    writer.flush();
+                    writer.close();
+                    Toast.makeText(MainActivity.this, "Saved", Toast.LENGTH_SHORT).show();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                try {
+                    p = Runtime.getRuntime().exec(path + "/PocketIDE/JavaPrograms/prog.java");
+                    BufferedReader reader = new BufferedReader(
+                            new InputStreamReader(p.getInputStream()));
+                    String line = "";
+                    while ((line = reader.readLine()) != null) {
+                        output2.append(line).append("\n");
+                        p.waitFor();
                     }
+                } catch (IOException | InterruptedException e) {
+                    output.setText(e.toString());
+                    e.printStackTrace();
                 }
-
+                String response = output2.toString();
+                //output.setText(response);
             }
         });
 
@@ -121,38 +144,5 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-    }
-
-    public static void execute(String[] commands, String[] headers) {
-
-        try {
-            FileWriter fstream = new FileWriter("Example.java");
-            BufferedWriter out = new BufferedWriter(fstream);
-
-            out.write("");
-
-            for (String header : headers) out.append(header);
-
-            out.append("class Example { public static void main(String args[]) { ");
-
-            for (String cmd : commands) out.append(cmd);
-
-            out.append(" } }");
-
-            out.close();
-        } catch (Exception e) {
-            System.err.println("Error: " + e.getMessage());
-        }
-
-        // set path, compile, & run
-        try {
-            Process tr = Runtime.getRuntime().exec(
-                    new String[]{"java -cp .",
-                            "javac Example.java",
-                            "java Example"});
-        } catch (Exception e) {
-            System.err.println("Error: " + e.getMessage());
-        }
-
     }
 }

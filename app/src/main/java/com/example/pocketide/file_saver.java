@@ -17,6 +17,10 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.attribute.PosixFilePermission;
+import java.nio.file.attribute.PosixFilePermissions;
 
 public class file_saver extends AppCompatActivity {
     FloatingActionButton add;
@@ -63,12 +67,14 @@ public class file_saver extends AppCompatActivity {
                                    e.printStackTrace();
                                }
                            } else if (java.isChecked()) {
-                               File folder = new File(Environment.getExternalStorageDirectory().toString() + "/PocketIDE/Java programs");
+                               String path=Environment.getExternalStorageDirectory().toString();
+                               File folder = new File(path + "/PocketIDE/JavaPrograms");
                                folder.mkdirs();
 
                                String extStorageDirectory = folder.toString();
 
                                File file = new File(extStorageDirectory, filename + ".java");
+
                                try {
                                    file.createNewFile();
                                } catch (IOException e) {
