@@ -16,6 +16,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.io.File;
+import java.io.IOException;
 
 public class file_saver extends AppCompatActivity {
     FloatingActionButton add;
@@ -58,6 +59,11 @@ public class file_saver extends AppCompatActivity {
 
                                //Create New file and name it Image2.PNG
                                File file = new File(extStorageDirectory, filename + ".c");
+                               try {
+                                   file.createNewFile();
+                               } catch (IOException e) {
+                                   e.printStackTrace();
+                               }
                            } else if (java.isChecked()) {
                                File folder = new File(Environment.getExternalStorageDirectory().toString() + "/PocketIDE/Java programs");
                                folder.mkdirs();
@@ -67,6 +73,11 @@ public class file_saver extends AppCompatActivity {
 
                                //Create New file and name it Image2.PNG
                                File file = new File(extStorageDirectory, filename + ".java");
+                               try {
+                                   file.createNewFile();
+                               } catch (IOException e) {
+                                   e.printStackTrace();
+                               }
                            } else if (cpp.isChecked()) {
                                File folder = new File(Environment.getExternalStorageDirectory().toString() + "/PocketIDE/C++ programs");
                                folder.mkdirs();
@@ -76,6 +87,11 @@ public class file_saver extends AppCompatActivity {
 
                                //Create New file and name it Image2.PNG
                                File file = new File(extStorageDirectory, filename + ".cpp");
+                               try {
+                                   file.createNewFile();
+                               } catch (IOException e) {
+                                   e.printStackTrace();
+                               }
                            } else {
                                Toast.makeText(file_saver.this, "please select anyone language", Toast.LENGTH_SHORT).show();
                            }
