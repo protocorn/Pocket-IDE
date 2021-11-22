@@ -35,13 +35,13 @@ public class FragmentAdapter extends FragmentPagerAdapter {
     @Override
     public CharSequence getPageTitle(int position) {
         String title = null;
-        if(position==1){
+        if(position==0){
             title="C";
         }
-        else if(position==2){
+        else if(position==1){
             title="C++";
         }
-        else if(position==3){
+        else if(position==2){
             title="Java";
         }
         return title;
