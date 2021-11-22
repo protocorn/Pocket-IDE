@@ -54,10 +54,8 @@ public class file_saver extends AppCompatActivity {
                                File folder = new File(Environment.getExternalStorageDirectory().toString() + "/PocketIDE/C programs");
                                folder.mkdirs();
 
-                               //Save the path as a string value
                                String extStorageDirectory = folder.toString();
 
-                               //Create New file and name it Image2.PNG
                                File file = new File(extStorageDirectory, filename + ".c");
                                try {
                                    file.createNewFile();
@@ -68,10 +66,8 @@ public class file_saver extends AppCompatActivity {
                                File folder = new File(Environment.getExternalStorageDirectory().toString() + "/PocketIDE/Java programs");
                                folder.mkdirs();
 
-                               //Save the path as a string value
                                String extStorageDirectory = folder.toString();
 
-                               //Create New file and name it Image2.PNG
                                File file = new File(extStorageDirectory, filename + ".java");
                                try {
                                    file.createNewFile();
@@ -82,10 +78,8 @@ public class file_saver extends AppCompatActivity {
                                File folder = new File(Environment.getExternalStorageDirectory().toString() + "/PocketIDE/C++ programs");
                                folder.mkdirs();
 
-                               //Save the path as a string value
                                String extStorageDirectory = folder.toString();
 
-                               //Create New file and name it Image2.PNG
                                File file = new File(extStorageDirectory, filename + ".cpp");
                                try {
                                    file.createNewFile();
