@@ -10,9 +10,11 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="WELCOME"
+        android:text="Pocket IDE"
         android:textAlignment="center"
-        android:textSize="22sp" />
+        android:textColor="#808080"
+        android:textSize="22sp"
+        android:textStyle="bold" />
 
     <EditText
         android:id="@+id/txt_input"
@@ -55,10 +57,11 @@
 
         <Button
             android:id="@+id/btn_cancel"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:backgroundTint="#FF5722"
+            android:minWidth="100dp"
             android:text="Cancel"
             android:textColor="#ffffff"
             android:textSize="18sp"
@@ -67,12 +70,13 @@
 
         <Button
             android:id="@+id/btn_okay"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
             android:layout_weight="1"
             android:backgroundTint="#8BC34A"
+            android:minWidth="100dp"
             android:text="Save"
             android:textColor="#ffffff"
             android:textSize="18sp"
