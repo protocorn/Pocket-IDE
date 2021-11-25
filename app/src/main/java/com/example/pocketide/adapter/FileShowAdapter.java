@@ -1,26 +1,26 @@
 package com.example.pocketide.adapter;
 
 import android.content.Context;
-import android.os.Environment;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.pocketide.Models.FileModel;
+import com.example.pocketide.MainActivity;
 import com.example.pocketide.R;
 
-import java.io.File;
 import java.util.List;
 
 public class FileShowAdapter extends RecyclerView.Adapter<FileShowAdapter.viewholder> {
     Context context;
     List<String> list;
     List<String> date;
+
 
     public FileShowAdapter(List<String> list,List<String> date, Context context) {
         this.list = list;
@@ -40,6 +40,15 @@ public class FileShowAdapter extends RecyclerView.Adapter<FileShowAdapter.viewho
     public void onBindViewHolder(@NonNull FileShowAdapter.viewholder holder, int position) {
         holder.filename.setText(list.get(position));
         holder.date1.setText(date.get(position));
+        holder.linearLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent intent = new Intent(context, MainActivity.class);
+                intent.putExtra("filename", list.get(position));
+                context.startActivity(intent);
+            }
+        });
     }
 
     @Override
@@ -49,11 +58,15 @@ public class FileShowAdapter extends RecyclerView.Adapter<FileShowAdapter.viewho
 
     public class viewholder extends RecyclerView.ViewHolder {
         TextView filename, date1;
+        LinearLayout linearLayout;
 
         public viewholder(@NonNull View itemView) {
             super(itemView);
            filename = itemView.findViewById(R.id.file_name);
            date1 = itemView.findViewById(R.id.date);
+           linearLayout = itemView.findViewById(R.id.file_on_click);
+
+
         }
     }
 }

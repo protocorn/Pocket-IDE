@@ -6,7 +6,7 @@
     android:layout_height="wrap_content">
 
     <LinearLayout
-        android:id="@+id/linearLayout"
+        android:id="@+id/file_on_click"
         android:layout_width="0dp"
         android:layout_height="60dp"
         android:layout_margin="10dp"
@@ -46,5 +46,5 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
+        app:layout_constraintTop_toBottomOf="@+id/file_on_click" />
 </androidx.constraintlayout.widget.ConstraintLayout>

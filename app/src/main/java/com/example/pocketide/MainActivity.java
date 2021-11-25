@@ -1,11 +1,8 @@
 package com.example.pocketide;
 
-import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.text.Editable;
-import android.text.Html;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
@@ -19,20 +16,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.pocketide.adapter.NumberAdapter;
 
-import org.stringtemplate.v4.Interpreter;
-
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.DataOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.nio.file.attribute.PosixFilePermissions;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
     private List<String> count;
     NumberAdapter numberAdapter;
     int initial_line_count = 1, final_line_count;
+    String filename;
 
     Button compile;
     EditText editText;
@@ -50,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         getSupportActionBar().hide();
+        filename = getIntent().getStringExtra("filename");
 
         compile = findViewById(R.id.compile);
         output = findViewById(R.id.output);
@@ -68,11 +58,11 @@ public class MainActivity extends AppCompatActivity {
                 Process p;
                 StringBuffer output2 = new StringBuffer();
                 String path = Environment.getExternalStorageDirectory().toString();
-                File file = new File(path + "/PocketIDE/JavaPrograms/prog.java");
+                File file = new File(path + "/PocketIDE/JavaPrograms/"+ filename);
                 /*file.canExecute();
                 file.canWrite();
                 file.canRead();*/
-                try {
+               /* try {
                     FileReader fr = new FileReader(file);
                     BufferedReader br = new BufferedReader(fr);
                     do{
@@ -81,8 +71,9 @@ public class MainActivity extends AppCompatActivity {
                     }while(br.readLine()!=null);
                 } catch (IOException e) {
                     e.printStackTrace();
-                }
+                }*/
                 try {
+
                     FileWriter writer = new FileWriter(file);
                     writer.append(editText.getText().toString());
                     writer.flush();
@@ -92,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
                 try {
-                    p = Runtime.getRuntime().exec(path + "/PocketIDE/JavaPrograms/prog.java");
+                    p = Runtime.getRuntime().exec(path + "/PocketIDE/JavaPrograms/"+ filename);
                     BufferedReader reader = new BufferedReader(
                             new InputStreamReader(p.getInputStream()));
                     String line = "";
