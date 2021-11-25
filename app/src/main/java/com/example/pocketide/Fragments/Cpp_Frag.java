@@ -48,17 +48,19 @@ public class Cpp_Frag extends Fragment {
 
         File path = Environment.getExternalStorageDirectory();
         File yourDir = new File(path, "/PocketIDE/C++Programs");
-        DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
-        for (File f : yourDir.listFiles()) {
-            if (f.isFile()) {
-                String name = f.getName();
-                long date_milli= f.lastModified();
-                Calendar calendar = Calendar.getInstance();
-                calendar.setTimeInMillis(date_milli);
-                String date=formatter.format(calendar.getTime());
-                list.add(name);
-                datelist.add(date);
-                fileShowAdapter.notifyDataSetChanged();
+        if(yourDir.exists()) {
+            DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+            for (File f : yourDir.listFiles()) {
+                if (f.isFile()) {
+                    String name = f.getName();
+                    long date_milli = f.lastModified();
+                    Calendar calendar = Calendar.getInstance();
+                    calendar.setTimeInMillis(date_milli);
+                    String date = formatter.format(calendar.getTime());
+                    list.add(name);
+                    datelist.add(date);
+                    fileShowAdapter.notifyDataSetChanged();
+                }
             }
         }
         // Inflate the layout for this fragment
