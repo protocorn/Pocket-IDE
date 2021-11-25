@@ -6,6 +6,7 @@
     tools:context=".Fragments.C_Frag">
 
     <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/c_list"
         android:layout_width="match_parent"
         android:layout_height="754dp" />
 </FrameLayout>
