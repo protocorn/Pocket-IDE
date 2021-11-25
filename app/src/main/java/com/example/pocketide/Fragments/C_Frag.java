@@ -46,7 +46,7 @@ public class C_Frag extends Fragment {
         recyclerView.setAdapter(fileShowAdapter);
 
         File path = Environment.getExternalStorageDirectory();
-        File yourDir = new File(path, "/PocketIDE/C Programs");
+        File yourDir = new File(path, "/PocketIDE/CPrograms");
         DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
         for (File f : yourDir.listFiles()) {
             if (f.isFile()) {

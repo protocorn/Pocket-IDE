@@ -69,7 +69,7 @@ public class file_saver extends AppCompatActivity {
                            Toast.makeText(file_saver.this, "Filename cannot be empty", Toast.LENGTH_SHORT).show();
                        } else {
                            if (c.isChecked()) {
-                               File folder = new File(Environment.getExternalStorageDirectory().toString() + "/PocketIDE/C programs");
+                               File folder = new File(Environment.getExternalStorageDirectory().toString() + "/PocketIDE/CPrograms");
                                folder.mkdirs();
 
                                String extStorageDirectory = folder.toString();
@@ -77,6 +77,8 @@ public class file_saver extends AppCompatActivity {
                                File file = new File(extStorageDirectory, filename + ".c");
                                try {
                                    file.createNewFile();
+                                   Toast.makeText(file_saver.this, "New C File was Created Successfully", Toast.LENGTH_SHORT).show();
+                                   dialog.dismiss();
                                } catch (IOException e) {
                                    e.printStackTrace();
                                }
@@ -91,11 +93,13 @@ public class file_saver extends AppCompatActivity {
 
                                try {
                                    file.createNewFile();
+                                   Toast.makeText(file_saver.this, "New Java File was Created Successfully", Toast.LENGTH_SHORT).show();
+                                   dialog.dismiss();
                                } catch (IOException e) {
                                    e.printStackTrace();
                                }
                            } else if (cpp.isChecked()) {
-                               File folder = new File(Environment.getExternalStorageDirectory().toString() + "/PocketIDE/C++ programs");
+                               File folder = new File(Environment.getExternalStorageDirectory().toString() + "/PocketIDE/C++Programs");
                                folder.mkdirs();
 
                                String extStorageDirectory = folder.toString();
@@ -103,6 +107,8 @@ public class file_saver extends AppCompatActivity {
                                File file = new File(extStorageDirectory, filename + ".cpp");
                                try {
                                    file.createNewFile();
+                                   Toast.makeText(file_saver.this, "New Cpp File was Created Successfully", Toast.LENGTH_SHORT).show();
+                                   dialog.dismiss();
                                } catch (IOException e) {
                                    e.printStackTrace();
                                }
