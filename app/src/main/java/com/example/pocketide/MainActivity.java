@@ -1,9 +1,12 @@
 package com.example.pocketide;
 
+import static android.content.ContentValues.TAG;
+
 import android.os.Bundle;
 import android.os.Environment;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -18,6 +21,8 @@ import com.example.pocketide.adapter.NumberAdapter;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -25,7 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
-    private List<String> count;
+    private List<String> countlist;
     NumberAdapter numberAdapter;
     int initial_line_count = 1, final_line_count;
     String filename;
@@ -44,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
         compile = findViewById(R.id.compile);
         output = findViewById(R.id.output);
 
-        count = new ArrayList<>();
+        countlist = new ArrayList<>();
 
         RecyclerView recyclerView;
         editText = findViewById(R.id.editTextTextMultiLine);
@@ -52,26 +57,48 @@ public class MainActivity extends AppCompatActivity {
 
         recyclerView = findViewById(R.id.recyclerView);
 
+        String line2 = null;
+        String path = Environment.getExternalStorageDirectory().toString();
+        try {
+            FileInputStream fileInputStream = new FileInputStream (new File(path +"/PocketIDE/JavaPrograms/"+ filename));
+            InputStreamReader inputStreamReader = new InputStreamReader(fileInputStream);
+            BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+            StringBuilder stringBuilder = new StringBuilder();
+
+            while ( (line2 = bufferedReader.readLine()) != null )
+            {
+                stringBuilder.append(line2);
+            }
+            fileInputStream.close();
+            line2 = stringBuilder.toString();
+            editText.setText(line2);
+            bufferedReader.close();
+        }
+        catch(FileNotFoundException ex) {
+            Log.d(TAG, ex.getMessage());
+        }
+        catch(IOException ex) {
+            Log.d(TAG, ex.getMessage());
+        }
+
+        editText.post(new Runnable() {
+            @Override
+            public void run() {
+                int counter=1;
+                for(int i=0;i<editText.getLineCount();i++) {
+                    countlist.add(String.valueOf(counter));
+                    counter++;
+                    numberAdapter.notifyDataSetChanged();
+                }
+            }
+        });
+
         compile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Process p;
                 StringBuffer output2 = new StringBuffer();
-                String path = Environment.getExternalStorageDirectory().toString();
                 File file = new File(path + "/PocketIDE/JavaPrograms/"+ filename);
-                /*file.canExecute();
-                file.canWrite();
-                file.canRead();*/
-               /* try {
-                    FileReader fr = new FileReader(file);
-                    BufferedReader br = new BufferedReader(fr);
-                    do{
-                        String str= br.readLine();
-                        editText.setText(str);
-                    }while(br.readLine()!=null);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }*/
                 try {
 
                     FileWriter writer = new FileWriter(file);
@@ -101,7 +128,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         //attaching adapter to RecyclerView
-        numberAdapter = new NumberAdapter(count, MainActivity.this);
+        numberAdapter = new NumberAdapter(countlist, MainActivity.this);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(MainActivity.this);
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setAdapter(numberAdapter);
@@ -126,11 +153,11 @@ public class MainActivity extends AppCompatActivity {
                     }*/
                 if (initial_line_count != final_line_count && initial_line_count < final_line_count) {
                     //adding number of lines to the list
-                    count.add(String.valueOf(final_line_count));
+                    countlist.add(String.valueOf(final_line_count));
                     //notifying the updates to the adapter
                     numberAdapter.notifyDataSetChanged();
                 } else if (initial_line_count != final_line_count && initial_line_count > final_line_count) {
-                    count.remove(String.valueOf(initial_line_count));
+                    countlist.remove(String.valueOf(initial_line_count));
                     numberAdapter.notifyDataSetChanged();
                 }
             }
