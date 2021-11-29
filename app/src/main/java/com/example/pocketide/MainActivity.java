@@ -137,34 +137,28 @@ public class MainActivity extends AppCompatActivity {
 
                             try {
                                 httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
-
-
                                 Log.d("myapp", "works till here. 2");
                                 try {
                                     HttpResponse response = httpclient.execute(httppost);
                                     String responseBody = EntityUtils.toString(response.getEntity());
-                                    TextView txtOutput=findViewById(R.id.output);//find output label by id
+                                    TextView txtOutput=findViewById(R.id.output);
                                     setText(txtOutput,responseBody);
                                     Log.d("myapp", "response " + responseBody);
                                 } catch (ClientProtocolException e) {
-                                    e.printStackTrace();
-                                    TextView txtOutput=findViewById(R.id.output);//find output label by id
-                                    setText(txtOutput,e.toString());
+                                    e.printStackTrace();//find output label by id
+                                    setText(output,e.toString());
                                 } catch (IOException e) {
                                     e.printStackTrace();
-                                    TextView txtOutput=findViewById(R.id.output);//find output label by id
-                                    setText(txtOutput,e.toString());
+                                    setText(output,e.toString());
                                 }
                             } catch (UnsupportedEncodingException e) {
                                 e.printStackTrace();
-                                TextView txtOutput=findViewById(R.id.output);//find output label by id
-                                setText(txtOutput,e.toString());
+                                setText(output,e.toString());
                             }
 
                         } catch (Exception e) {
                             e.printStackTrace();
-                            TextView txtOutput=findViewById(R.id.output);//find output label by id
-                            txtOutput.setText(e.toString());
+                            output.setText(e.toString());
                         }
                     }
                 });
@@ -184,9 +178,6 @@ public class MainActivity extends AppCompatActivity {
                         compile.setBackgroundResource(android.R.drawable.btn_default);
                     }
                 }, 5000);
-
-
-
             }
         });
 
