@@ -2,8 +2,10 @@ package com.example.pocketide;
 
 import static android.content.ContentValues.TAG;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -18,6 +20,15 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.pocketide.adapter.NumberAdapter;
+import com.google.firebase.crashlytics.buildtools.reloc.org.apache.http.HttpResponse;
+import com.google.firebase.crashlytics.buildtools.reloc.org.apache.http.NameValuePair;
+import com.google.firebase.crashlytics.buildtools.reloc.org.apache.http.client.ClientProtocolException;
+import com.google.firebase.crashlytics.buildtools.reloc.org.apache.http.client.HttpClient;
+import com.google.firebase.crashlytics.buildtools.reloc.org.apache.http.client.entity.UrlEncodedFormEntity;
+import com.google.firebase.crashlytics.buildtools.reloc.org.apache.http.client.methods.HttpPost;
+import com.google.firebase.crashlytics.buildtools.reloc.org.apache.http.impl.client.DefaultHttpClient;
+import com.google.firebase.crashlytics.buildtools.reloc.org.apache.http.message.BasicNameValuePair;
+import com.google.firebase.crashlytics.buildtools.reloc.org.apache.http.util.EntityUtils;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -26,6 +37,7 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,6 +50,15 @@ public class MainActivity extends AppCompatActivity {
     Button compile;
     EditText editText;
     TextView output;
+
+    private void setText(final TextView text,final String value) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                text.setText(value);
+            }
+        });
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +77,7 @@ public class MainActivity extends AppCompatActivity {
         editText.setLineSpacing(0, 1.17f); //spacing to align with recyclerview
 
         recyclerView = findViewById(R.id.recyclerView);
+
 
         String line2 = null;
         String path = Environment.getExternalStorageDirectory().toString();
@@ -96,34 +118,75 @@ public class MainActivity extends AppCompatActivity {
         compile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Process p;
-                StringBuffer output2 = new StringBuffer();
-                File file = new File(path + "/PocketIDE/JavaPrograms/"+ filename);
-                try {
+                Thread thread = new Thread(new Runnable() {
 
-                    FileWriter writer = new FileWriter(file);
-                    writer.append(editText.getText().toString());
-                    writer.flush();
-                    writer.close();
-                    Toast.makeText(MainActivity.this, "Saved", Toast.LENGTH_SHORT).show();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                try {
-                    p = Runtime.getRuntime().exec(path + "/PocketIDE/JavaPrograms/"+ filename);
-                    BufferedReader reader = new BufferedReader(
-                            new InputStreamReader(p.getInputStream()));
-                    String line = "";
-                    while ((line = reader.readLine()) != null) {
-                        output2.append(line).append("\n");
-                        p.waitFor();
+                    @Override
+                    public void run() {
+
+                        try  {
+
+                            //Your code goes here
+                            String code = editText.getText().toString();
+                            String url = "http://45.79.179.111/java-android/compile_android.php";
+                            HttpClient httpclient = new DefaultHttpClient();
+                            HttpPost httppost = new HttpPost(url);
+                            // Add your data
+                            List<NameValuePair> nameValuePairs = new ArrayList< NameValuePair >(5);
+                            nameValuePairs.add(new BasicNameValuePair("source", code));
+                            nameValuePairs.add(new BasicNameValuePair("input", "0"));
+
+                            try {
+                                httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+
+
+                                Log.d("myapp", "works till here. 2");
+                                try {
+                                    HttpResponse response = httpclient.execute(httppost);
+                                    String responseBody = EntityUtils.toString(response.getEntity());
+                                    TextView txtOutput=findViewById(R.id.output);//find output label by id
+                                    setText(txtOutput,responseBody);
+                                    Log.d("myapp", "response " + responseBody);
+                                } catch (ClientProtocolException e) {
+                                    e.printStackTrace();
+                                    TextView txtOutput=findViewById(R.id.output);//find output label by id
+                                    setText(txtOutput,e.toString());
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                    TextView txtOutput=findViewById(R.id.output);//find output label by id
+                                    setText(txtOutput,e.toString());
+                                }
+                            } catch (UnsupportedEncodingException e) {
+                                e.printStackTrace();
+                                TextView txtOutput=findViewById(R.id.output);//find output label by id
+                                setText(txtOutput,e.toString());
+                            }
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            TextView txtOutput=findViewById(R.id.output);//find output label by id
+                            txtOutput.setText(e.toString());
+                        }
                     }
-                    String response = output2.toString();
-                    output.setText(response);
-                } catch (IOException | InterruptedException e) {
-                    output.setText(e.toString());
-                    e.printStackTrace();
-                }
+                });
+
+                thread.start();
+                //disable button and modify color
+                compile.setClickable(false);
+                compile.setBackgroundColor(Color.GRAY);
+
+                //timer for 5s delay and enable button
+                final Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        // Do something after 5s = 5000ms
+                        compile.setClickable(true);
+                        compile.setBackgroundResource(android.R.drawable.btn_default);
+                    }
+                }, 5000);
+
+
+
             }
         });
 
