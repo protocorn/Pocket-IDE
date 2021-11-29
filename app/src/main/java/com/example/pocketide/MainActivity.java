@@ -124,8 +124,6 @@ public class MainActivity extends AppCompatActivity {
                     public void run() {
 
                         try  {
-
-                            //Your code goes here
                             String code = editText.getText().toString();
                             String url = "http://45.79.179.111/java-android/compile_android.php";
                             HttpClient httpclient = new DefaultHttpClient();
