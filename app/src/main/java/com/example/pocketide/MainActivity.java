@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.os.NetworkOnMainThreadException;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -13,29 +14,26 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.pocketide.adapter.NumberAdapter;
-import com.google.firebase.crashlytics.buildtools.reloc.org.apache.http.HttpResponse;
-import com.google.firebase.crashlytics.buildtools.reloc.org.apache.http.NameValuePair;
-import com.google.firebase.crashlytics.buildtools.reloc.org.apache.http.client.ClientProtocolException;
-import com.google.firebase.crashlytics.buildtools.reloc.org.apache.http.client.HttpClient;
-import com.google.firebase.crashlytics.buildtools.reloc.org.apache.http.client.entity.UrlEncodedFormEntity;
-import com.google.firebase.crashlytics.buildtools.reloc.org.apache.http.client.methods.HttpPost;
-import com.google.firebase.crashlytics.buildtools.reloc.org.apache.http.impl.client.DefaultHttpClient;
-import com.google.firebase.crashlytics.buildtools.reloc.org.apache.http.message.BasicNameValuePair;
-import com.google.firebase.crashlytics.buildtools.reloc.org.apache.http.util.EntityUtils;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,14 +47,6 @@ public class MainActivity extends AppCompatActivity {
     EditText editText;
     TextView output;
 
-    private void setText(final TextView text,final String value) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                text.setText(value);
-            }
-        });
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,35 +67,32 @@ public class MainActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.recyclerView);
 
 
-        String line2 = null;
+        String line2;
         String path = Environment.getExternalStorageDirectory().toString();
         try {
-            FileInputStream fileInputStream = new FileInputStream (new File(path +"/PocketIDE/JavaPrograms/"+ filename));
+            FileInputStream fileInputStream = new FileInputStream(new File(path + "/PocketIDE/JavaPrograms/" + filename));
             InputStreamReader inputStreamReader = new InputStreamReader(fileInputStream);
             BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
             StringBuilder stringBuilder = new StringBuilder();
 
-            while ( (line2 = bufferedReader.readLine()) != null )
-            {
+            while ((line2 = bufferedReader.readLine()) != null) {
                 stringBuilder.append(line2);
             }
             fileInputStream.close();
             line2 = stringBuilder.toString();
             editText.setText(line2);
             bufferedReader.close();
-        }
-        catch(FileNotFoundException ex) {
+        } catch (FileNotFoundException ex) {
             Log.d(TAG, ex.getMessage());
-        }
-        catch(IOException ex) {
+        } catch (IOException ex) {
             Log.d(TAG, ex.getMessage());
         }
 
         editText.post(new Runnable() {
             @Override
             public void run() {
-                int counter=1;
-                for(int i=0;i<editText.getLineCount();i++) {
+                int counter = 1;
+                for (int i = 0; i < editText.getLineCount(); i++) {
                     countlist.add(String.valueOf(counter));
                     counter++;
                     numberAdapter.notifyDataSetChanged();
@@ -116,65 +103,70 @@ public class MainActivity extends AppCompatActivity {
         compile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Thread thread = new Thread(new Runnable() {
+                try {
+                    FileWriter fWriter = new FileWriter(path + "/PocketIDE/JavaPrograms/" + filename);
+                    fWriter.append(editText.getText().toString());
 
+                    // Close the file writer object
+                    fWriter.close();
+
+                    // Display message to be printed on the console
+                    Toast.makeText(MainActivity.this, "File Saved", Toast.LENGTH_SHORT).show();
+                }
+
+                // Catch block to handle if exception occurs
+                catch (IOException e) {
+                    // Print the exception
+                    System.out.print(e.getMessage());
+                }
+
+                //API request to compile the code
+                Thread thread = new Thread(new Runnable() {
                     @Override
                     public void run() {
-
-                        try  {
-                            String code = editText.getText().toString();
-                            String url = "http://45.79.179.111/java-android/compile_android.php";
-                            HttpClient httpclient = new DefaultHttpClient();
-                            HttpPost httppost = new HttpPost(url);
-                            // Add your data
-                            List<NameValuePair> nameValuePairs = new ArrayList< NameValuePair >(5);
-                            nameValuePairs.add(new BasicNameValuePair("source", code));
-                            nameValuePairs.add(new BasicNameValuePair("input", "0"));
-
+                        try {
                             try {
-                                httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
-                                Log.d("myapp", "works till here. 2");
-                                try {
-                                    HttpResponse response = httpclient.execute(httppost);
-                                    String responseBody = EntityUtils.toString(response.getEntity());
-                                    TextView txtOutput=findViewById(R.id.output);
-                                    setText(txtOutput,responseBody);
-                                    Log.d("myapp", "response " + responseBody);
-                                } catch (ClientProtocolException e) {
-                                    e.printStackTrace();//find output label by id
-                                    setText(output,e.toString());
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                    setText(output,e.toString());
+                                String clientId = "af52e5b3d644630c2d81bade4206c055"; //Replace with your client ID
+                                String clientSecret = "e868414f5565d10183267d398d578a448c6a1a70bf8be2896ebc208388b013bc"; //Replace with your client Secret
+                                String script = editText.getText().toString();
+                                String language = "java";
+                                String versionIndex = "0";
+                                URL url = new URL("https://api.jdoodle.com/v1/execute");
+                                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                                connection.setDoOutput(true);
+                                connection.setRequestMethod("POST");
+                                connection.setRequestProperty("Content-Type", "application/json");
+                                String input = "{\"clientId\": \"" + clientId + "\",\"clientSecret\":\"" + clientSecret + "\",\"script\":\"" + script +
+                                        "\",\"language\":\"" + language + "\",\"versionIndex\":\"" + versionIndex + "\"} ";
+                                System.out.println(input);
+                                OutputStream outputStream = connection.getOutputStream();
+                                outputStream.write(input.getBytes());
+                                outputStream.flush();
+                                if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
+                                    throw new RuntimeException("Please check your inputs : HTTP error code : " + connection.getResponseCode());
                                 }
-                            } catch (UnsupportedEncodingException e) {
+                                BufferedReader bufferedReader;
+                                bufferedReader = new BufferedReader(new InputStreamReader(
+                                        (connection.getInputStream())));
+                                StringBuilder results = new StringBuilder();
+                                String output1;
+                                System.out.println("Output from JDoodle .... \n");
+                                while ((output1 = bufferedReader.readLine()) != null) {
+                                    results.append(output1);
+                                }
+                                connection.disconnect();
+                                output.setText(results);
+                            } catch (IOException e) {
                                 e.printStackTrace();
-                                setText(output,e.toString());
                             }
-
                         } catch (Exception e) {
                             e.printStackTrace();
-                            output.setText(e.toString());
                         }
                     }
                 });
-
                 thread.start();
-                //disable button and modify color
-                compile.setClickable(false);
-                compile.setBackgroundColor(Color.GRAY);
-
-                //timer for 5s delay and enable button
-                final Handler handler = new Handler();
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        // Do something after 5s = 5000ms
-                        compile.setClickable(true);
-                        compile.setBackgroundResource(android.R.drawable.btn_default);
-                    }
-                }, 5000);
             }
+
         });
 
         //attaching adapter to RecyclerView
