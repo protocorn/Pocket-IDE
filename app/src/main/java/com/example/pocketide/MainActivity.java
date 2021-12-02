@@ -2,6 +2,8 @@ package com.example.pocketide;
 
 import static android.content.ContentValues.TAG;
 
+import android.app.ProgressDialog;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Environment;
@@ -17,10 +19,17 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.pocketide.adapter.NumberAdapter;
+import com.example.pocketide.backgroundTasks.ActivityTask;
+import com.example.pocketide.backgroundTasks.GccTask;
+import com.example.pocketide.compileAndRun.GccCompiler;
+import com.example.pocketide.project.Project;
+import com.google.android.material.navigation.NavigationView;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -48,6 +57,18 @@ public class MainActivity extends AppCompatActivity {
     TextView output;
 
 
+    private Project selectedProject;
+
+    private boolean isLoadingDialog = false;
+   // private FileBrowserDialog fileBrowserDialog;
+    private GccCompiler gccCompiler;
+    private ActivityTask activityStartTask;
+    private GccTask compileTask;
+    private boolean compiled = false;
+    private SharedPreferences sharedPreferences;
+    private String compileParams;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,10 +88,12 @@ public class MainActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.recyclerView);
 
 
+
+
         String line2;
         String path = Environment.getExternalStorageDirectory().toString();
         try {
-            FileInputStream fileInputStream = new FileInputStream(new File(path + "/PocketIDE/JavaPrograms/" + filename));
+            FileInputStream fileInputStream = new FileInputStream(new File(path + "/PocketIDE/CPrograms/" + filename));
             InputStreamReader inputStreamReader = new InputStreamReader(fileInputStream);
             BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
             StringBuilder stringBuilder = new StringBuilder();
@@ -100,11 +123,13 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+
+
         compile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 try {
-                    FileWriter fWriter = new FileWriter(path + "/PocketIDE/JavaPrograms/" + filename);
+                    FileWriter fWriter = new FileWriter(path + "/PocketIDE/CPrograms/" + filename);
                     fWriter.append(editText.getText().toString());
 
                     // Close the file writer object
@@ -119,9 +144,16 @@ public class MainActivity extends AppCompatActivity {
                     // Print the exception
                     System.out.print(e.getMessage());
                 }
+                ProgressDialog pd = new ProgressDialog(MainActivity.this);
+                pd.setMessage("Compile");
+                compileTask = new GccTask(pd);
+                compileTask.setOnTaskStarted((o) -> compileTask());
+                compileTask.setOnPostTask(this::compileTaskResult);
+                compileTask.setOnUpdateTask(this::compileProgress);
+                compileTask.execute();
 
                 //API request to compile the code
-                Thread thread = new Thread(new Runnable() {
+               /* Thread thread = new Thread(new Runnable() {
                     @Override
                     public void run() {
                         try {
@@ -164,7 +196,20 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
                 });
-                thread.start();
+                thread.start();*/
+            }
+
+            private void compileProgress(Object result) {
+                Object[] objs = (Object[]) result;
+                double endTime = (double) objs[1];
+                String compileMsg = (String) objs[0];
+                String msg = output.getText().toString() + compileMsg + "Task ends in " + Double.toString(endTime) + "s";
+                output.setText(msg);
+            }
+
+            private void compileTaskResult(Object... o) {
+                String msg = output.getText().toString() + o[0];
+                output.setText(msg);
             }
 
         });
@@ -205,4 +250,59 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
+    private Object compileTask() {
+        gccCompiler.setCompileParams(compileParams);
+        compileTask.updateProgress("Linking source...\n");
+        long startTime = 0;
+        StringBuilder builder = new StringBuilder();
+        boolean success = false;
+        try {
+            Thread.sleep(500);
+            compileTask.updateProgress("Starting compile...\n");
+            Thread.sleep(500);
+            startTime = System.currentTimeMillis();
+            Object[] objs = gccCompiler.compile(selectedProject);
+            String stdout = (String) objs[1];
+            String stderr = (String) objs[2];
+            if ((boolean) objs[0]) {
+                success = true;
+                if (!stdout.isEmpty()) {
+                    builder.append("Compiled with warnings: ").append(stdout).append("\n");
+                } else {
+                    builder.append("Compiled successfully.\n");
+                }
+            } else {
+                builder.append("Compile error: ").append(stderr).append("\n");
+            }
+        } catch (Exception e) {
+            String err = e.getMessage();
+            builder.append("Unknown error: ").append(err).append("\n");
+        }
+        long endTime = System.currentTimeMillis();
+        return new Object[]{builder.toString(), (endTime - startTime) / 1000.0, success};
+    }
+
+    private void checkCompiler() {
+        try {
+            gccCompiler = new GccCompiler(this);
+        } catch (IOException e) {
+           // Toast(MainActivity.this,e.getMessage(), Toast.LENGTH_SHORT, true);
+            Toast.makeText(MainActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private Object onStartTask() {
+        checkCompiler();
+        return null;
+    }
+  //  private void compileTaskResult(Object result)
+
+    /*
+     * Show GCC output while compiling in UI thread
+     */
+   // private void compileProgress(Object... o)
+
+
+
 }
