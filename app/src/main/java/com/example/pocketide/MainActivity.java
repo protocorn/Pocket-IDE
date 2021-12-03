@@ -60,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
     private Project selectedProject;
 
     private boolean isLoadingDialog = false;
-   // private FileBrowserDialog fileBrowserDialog;
+    // private FileBrowserDialog fileBrowserDialog;
     private GccCompiler gccCompiler;
     private ActivityTask activityStartTask;
     private GccTask compileTask;
@@ -287,7 +287,7 @@ public class MainActivity extends AppCompatActivity {
         try {
             gccCompiler = new GccCompiler(this);
         } catch (IOException e) {
-           // Toast(MainActivity.this,e.getMessage(), Toast.LENGTH_SHORT, true);
+            // Toast(MainActivity.this,e.getMessage(), Toast.LENGTH_SHORT, true);
             Toast.makeText(MainActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
         }
     }
@@ -296,12 +296,12 @@ public class MainActivity extends AppCompatActivity {
         checkCompiler();
         return null;
     }
-  //  private void compileTaskResult(Object result)
+    //  private void compileTaskResult(Object result)
 
     /*
      * Show GCC output while compiling in UI thread
      */
-   // private void compileProgress(Object... o)
+    // private void compileProgress(Object... o)
 
 
 
