@@ -1,6 +1,7 @@
 package com.example.pocketide;
 
 import android.app.Dialog;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -12,6 +13,7 @@ import android.widget.RadioButton;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.viewpager.widget.ViewPager;
 
 import com.example.pocketide.adapter.FragmentAdapter;
@@ -37,7 +39,6 @@ public class file_saver extends AppCompatActivity {
 
         viewPager.setAdapter(new FragmentAdapter(getSupportFragmentManager()));
         tabLayout.setupWithViewPager(viewPager);
-
 
         add.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -74,6 +75,9 @@ public class file_saver extends AppCompatActivity {
                                try {
                                    file.createNewFile();
                                    Toast.makeText(file_saver.this, "New C File was Created Successfully", Toast.LENGTH_SHORT).show();
+                                   Intent intent=new Intent(file_saver.this,MainActivity.class);
+                                   intent.putExtra("filename",filename);
+                                   startActivity(intent);
                                    dialog.dismiss();
                                } catch (IOException e) {
                                    e.printStackTrace();
@@ -90,6 +94,9 @@ public class file_saver extends AppCompatActivity {
                                try {
                                    file.createNewFile();
                                    Toast.makeText(file_saver.this, "New Java File was Created Successfully", Toast.LENGTH_SHORT).show();
+                                   Intent intent=new Intent(file_saver.this,MainActivity.class);
+                                   intent.putExtra("filename",filename);
+                                   startActivity(intent);
                                    dialog.dismiss();
                                } catch (IOException e) {
                                    e.printStackTrace();
@@ -104,6 +111,9 @@ public class file_saver extends AppCompatActivity {
                                try {
                                    file.createNewFile();
                                    Toast.makeText(file_saver.this, "New Cpp File was Created Successfully", Toast.LENGTH_SHORT).show();
+                                   Intent intent=new Intent(file_saver.this,MainActivity.class);
+                                   intent.putExtra("filename",filename);
+                                   startActivity(intent);
                                    dialog.dismiss();
                                } catch (IOException e) {
                                    e.printStackTrace();
@@ -124,5 +134,4 @@ public class file_saver extends AppCompatActivity {
             }
         });
     }
-
 }

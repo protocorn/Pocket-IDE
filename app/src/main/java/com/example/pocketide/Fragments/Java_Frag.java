@@ -1,10 +1,12 @@
 package com.example.pocketide.Fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.os.Environment;
 import android.view.LayoutInflater;
@@ -29,6 +31,7 @@ public class Java_Frag extends Fragment {
     RecyclerView recyclerView;
     List<String> list;
     List<String> datelist;
+    SwipeRefreshLayout refreshLayout;
 
     public Java_Frag() {
         // Required empty public constructor
@@ -38,6 +41,7 @@ public class Java_Frag extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_java_, container, false);
         recyclerView=view.findViewById(R.id.java_list);
+        refreshLayout=view.findViewById(R.id.refresh_java);
 
         list=new ArrayList<>();
         datelist=new ArrayList<>();
@@ -46,6 +50,13 @@ public class Java_Frag extends Fragment {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setAdapter(fileShowAdapter);
+
+        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                refreshLayout.setRefreshing(false);
+            }
+        });
 
         File path = Environment.getExternalStorageDirectory();
         File yourDir = new File(path, "/PocketIDE/JavaPrograms");

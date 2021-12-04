@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.pocketide.R;
 import com.example.pocketide.adapter.FileShowAdapter;
@@ -26,28 +27,31 @@ public class C_Frag extends Fragment {
     RecyclerView recyclerView;
     List<String> list;
     List<String> datelist;
+    SwipeRefreshLayout refreshLayout;
 
     public C_Frag() {
         // Required empty public constructor
     }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_c_, container, false);
-        recyclerView=view.findViewById(R.id.c_list);
+        recyclerView = view.findViewById(R.id.c_list);
+        refreshLayout = view.findViewById(R.id.refresh_c);
 
-        list=new ArrayList<>();
-        datelist=new ArrayList<>();
+        list = new ArrayList<>();
+        datelist = new ArrayList<>();
 
-        fileShowAdapter=new FileShowAdapter(list,datelist,getContext());
+        fileShowAdapter = new FileShowAdapter(list, datelist, getContext());
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setAdapter(fileShowAdapter);
 
         File path = Environment.getExternalStorageDirectory();
         File yourDir = new File(path, "/PocketIDE/CPrograms");
-        if(yourDir.exists()) {
+        if (yourDir.exists()) {
             DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
             for (File f : yourDir.listFiles()) {
                 if (f.isFile()) {
@@ -62,6 +66,12 @@ public class C_Frag extends Fragment {
                 }
             }
         }
+        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                refreshLayout.setRefreshing(false);
+            }
+        });
         // Inflate the layout for this fragment
         return view;
     }

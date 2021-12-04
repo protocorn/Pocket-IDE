@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.pocketide.R;
 import com.example.pocketide.adapter.FileShowAdapter;
@@ -26,6 +27,7 @@ public class Cpp_Frag extends Fragment {
     RecyclerView recyclerView;
     List<String> list;
     List<String> datelist;
+    SwipeRefreshLayout refreshLayout;
 
 
     public Cpp_Frag() {
@@ -37,6 +39,7 @@ public class Cpp_Frag extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_cpp_, container, false);
         recyclerView=view.findViewById(R.id.cpp_list);
+        refreshLayout=view.findViewById(R.id.refresh_cpp);
 
         list=new ArrayList<>();
         datelist=new ArrayList<>();
@@ -63,7 +66,16 @@ public class Cpp_Frag extends Fragment {
                 }
             }
         }
+        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                fileShowAdapter.notifyAll();
+                refreshLayout.setRefreshing(false);
+            }
+        });
+
         // Inflate the layout for this fragment
         return view;
     }
+
 }
