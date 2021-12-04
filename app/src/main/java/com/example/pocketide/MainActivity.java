@@ -154,8 +154,8 @@ public class MainActivity extends AppCompatActivity {
                                 String clientId = "1d9915a673520f1acdc941be6d0fbf38"; //Replace with your client ID
                                 String clientSecret = "59e56a3021e82d94a8667712b3e597ab4d141fde197df2073e52b27286de32fb"; //Replace with your client Secret
                                 String final_script = initial_script.replaceAll("\n", " ");
-                                final_script=initial_script.replaceAll("\"","\\\\"+"\"");
-                                String script = final_script;
+                                String final_script1 =final_script.replaceAll("\"","\\\\"+"\"");
+                                String script = final_script1;
                                 String language = lang;
                                 String versionIndex = version;
                                 URL url = new URL("https://api.jdoodle.com/v1/execute/");
