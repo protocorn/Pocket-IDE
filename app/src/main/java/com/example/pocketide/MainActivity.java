@@ -19,17 +19,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.pocketide.adapter.NumberAdapter;
-import com.example.pocketide.backgroundTasks.ActivityTask;
-import com.example.pocketide.backgroundTasks.GccTask;
-import com.example.pocketide.compileAndRun.GccCompiler;
-import com.example.pocketide.project.Project;
-import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.crashlytics.buildtools.reloc.org.apache.http.client.methods.HttpPost;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -43,6 +37,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -55,19 +50,6 @@ public class MainActivity extends AppCompatActivity {
     Button compile;
     EditText editText;
     TextView output;
-
-
-    private Project selectedProject;
-
-    private boolean isLoadingDialog = false;
-    // private FileBrowserDialog fileBrowserDialog;
-    private GccCompiler gccCompiler;
-    private ActivityTask activityStartTask;
-    private GccTask compileTask;
-    private boolean compiled = false;
-    private SharedPreferences sharedPreferences;
-    private String compileParams;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,8 +68,6 @@ public class MainActivity extends AppCompatActivity {
         editText.setLineSpacing(0, 1.17f); //spacing to align with recyclerview
 
         recyclerView = findViewById(R.id.recyclerView);
-
-
 
 
         String line2;
@@ -124,7 +104,6 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-
         compile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -145,28 +124,25 @@ public class MainActivity extends AppCompatActivity {
                     System.out.print(e.getMessage());
                 }
                 ProgressDialog pd = new ProgressDialog(MainActivity.this);
-                pd.setMessage("Compile");
-                compileTask = new GccTask(pd);
-                compileTask.setOnTaskStarted((o) -> compileTask());
-                compileTask.setOnPostTask(this::compileTaskResult);
-                compileTask.setOnUpdateTask(this::compileProgress);
-                compileTask.execute();
+                pd.setMessage("Compiling...");
+                pd.show();
 
                 //API request to compile the code
-               /* Thread thread = new Thread(new Runnable() {
+                Thread thread = new Thread(new Runnable() {
                     @Override
                     public void run() {
                         try {
                             try {
-                                String clientId = "af52e5b3d644630c2d81bade4206c055"; //Replace with your client ID
-                                String clientSecret = "e868414f5565d10183267d398d578a448c6a1a70bf8be2896ebc208388b013bc"; //Replace with your client Secret
+                                String clientId = "1d9915a673520f1acdc941be6d0fbf38"; //Replace with your client ID
+                                String clientSecret = "59e56a3021e82d94a8667712b3e597ab4d141fde197df2073e52b27286de32fb"; //Replace with your client Secret
                                 String script = editText.getText().toString();
                                 String language = "java";
-                                String versionIndex = "0";
-                                URL url = new URL("https://api.jdoodle.com/v1/execute");
-                                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-                                connection.setDoOutput(true);
-                                connection.setRequestMethod("POST");
+                                String versionIndex = "1";
+                                URL url = new URL("https://api.jdoodle.com/v1/execute/");
+                                URLConnection connection = url.openConnection();
+                                HttpURLConnection http = (HttpURLConnection)connection;
+                                http.setDoOutput(true);
+                                http.setRequestMethod("POST");
                                 connection.setRequestProperty("Content-Type", "application/json");
                                 String input = "{\"clientId\": \"" + clientId + "\",\"clientSecret\":\"" + clientSecret + "\",\"script\":\"" + script +
                                         "\",\"language\":\"" + language + "\",\"versionIndex\":\"" + versionIndex + "\"} ";
@@ -174,44 +150,31 @@ public class MainActivity extends AppCompatActivity {
                                 OutputStream outputStream = connection.getOutputStream();
                                 outputStream.write(input.getBytes());
                                 outputStream.flush();
-                                if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
-                                    throw new RuntimeException("Please check your inputs : HTTP error code : " + connection.getResponseCode());
+                                if (http.getResponseCode() != HttpURLConnection.HTTP_OK) {
+                                    throw new RuntimeException("Please check your inputs : HTTP error code : " + http.getResponseCode());
                                 }
                                 BufferedReader bufferedReader;
                                 bufferedReader = new BufferedReader(new InputStreamReader(
-                                        (connection.getInputStream())));
-                                StringBuilder results = new StringBuilder();
+                                        (http.getInputStream())));
                                 String output1;
                                 System.out.println("Output from JDoodle .... \n");
                                 while ((output1 = bufferedReader.readLine()) != null) {
-                                    results.append(output1);
+                                    output.setText(output1);
+                                    pd.dismiss();
                                 }
-                                connection.disconnect();
-                                output.setText(results);
+                                http.disconnect();
                             } catch (IOException e) {
                                 e.printStackTrace();
+                                pd.dismiss();
                             }
                         } catch (Exception e) {
                             e.printStackTrace();
+                            pd.dismiss();
                         }
                     }
                 });
-                thread.start();*/
+                thread.start();
             }
-
-            private void compileProgress(Object result) {
-                Object[] objs = (Object[]) result;
-                double endTime = (double) objs[1];
-                String compileMsg = (String) objs[0];
-                String msg = output.getText().toString() + compileMsg + "Task ends in " + Double.toString(endTime) + "s";
-                output.setText(msg);
-            }
-
-            private void compileTaskResult(Object... o) {
-                String msg = output.getText().toString() + o[0];
-                output.setText(msg);
-            }
-
         });
 
         //attaching adapter to RecyclerView
@@ -250,59 +213,4 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-
-    private Object compileTask() {
-        gccCompiler.setCompileParams(compileParams);
-        compileTask.updateProgress("Linking source...\n");
-        long startTime = 0;
-        StringBuilder builder = new StringBuilder();
-        boolean success = false;
-        try {
-            Thread.sleep(500);
-            compileTask.updateProgress("Starting compile...\n");
-            Thread.sleep(500);
-            startTime = System.currentTimeMillis();
-            Object[] objs = gccCompiler.compile(selectedProject);
-            String stdout = (String) objs[1];
-            String stderr = (String) objs[2];
-            if ((boolean) objs[0]) {
-                success = true;
-                if (!stdout.isEmpty()) {
-                    builder.append("Compiled with warnings: ").append(stdout).append("\n");
-                } else {
-                    builder.append("Compiled successfully.\n");
-                }
-            } else {
-                builder.append("Compile error: ").append(stderr).append("\n");
-            }
-        } catch (Exception e) {
-            String err = e.getMessage();
-            builder.append("Unknown error: ").append(err).append("\n");
-        }
-        long endTime = System.currentTimeMillis();
-        return new Object[]{builder.toString(), (endTime - startTime) / 1000.0, success};
-    }
-
-    private void checkCompiler() {
-        try {
-            gccCompiler = new GccCompiler(this);
-        } catch (IOException e) {
-            // Toast(MainActivity.this,e.getMessage(), Toast.LENGTH_SHORT, true);
-            Toast.makeText(MainActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    private Object onStartTask() {
-        checkCompiler();
-        return null;
-    }
-    //  private void compileTaskResult(Object result)
-
-    /*
-     * Show GCC output while compiling in UI thread
-     */
-    // private void compileProgress(Object... o)
-
-
-
 }
