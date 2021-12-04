@@ -49,7 +49,8 @@ public class MainActivity extends AppCompatActivity {
 
     Button compile;
     EditText editText;
-    TextView output;
+    TextView output, FileName;
+    String lang="",path_name="";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +61,20 @@ public class MainActivity extends AppCompatActivity {
 
         compile = findViewById(R.id.compile);
         output = findViewById(R.id.output);
+        FileName = findViewById(R.id.file_nm);
+
+        FileName.setText(filename);
+
+        if (filename.contains(".java")) {
+            lang = "java";
+            path_name="JavaPrograms";
+        } else if (filename.contains(".cpp")) {
+            lang = "c++";
+            path_name="C++Programs";
+        } else {
+            lang = "c";
+            path_name="CPrograms";
+        }
 
         countlist = new ArrayList<>();
 
@@ -73,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
         String line2;
         String path = Environment.getExternalStorageDirectory().toString();
         try {
-            FileInputStream fileInputStream = new FileInputStream(new File(path + "/PocketIDE/CPrograms/" + filename));
+            FileInputStream fileInputStream = new FileInputStream(new File(path + "/PocketIDE/"+path_name+"/" + filename));
             InputStreamReader inputStreamReader = new InputStreamReader(fileInputStream);
             BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
             StringBuilder stringBuilder = new StringBuilder();
@@ -108,7 +123,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 try {
-                    FileWriter fWriter = new FileWriter(path + "/PocketIDE/CPrograms/" + filename);
+                    FileWriter fWriter = new FileWriter(path + "/PocketIDE/"+path_name+"/" + filename);
                     fWriter.append(editText.getText().toString());
 
                     // Close the file writer object
@@ -133,16 +148,16 @@ public class MainActivity extends AppCompatActivity {
                     public void run() {
                         try {
                             try {
-                                String initial_script=editText.getText().toString();
+                                String initial_script = editText.getText().toString();
                                 String clientId = "1d9915a673520f1acdc941be6d0fbf38"; //Replace with your client ID
                                 String clientSecret = "59e56a3021e82d94a8667712b3e597ab4d141fde197df2073e52b27286de32fb"; //Replace with your client Secret
-                                String final_script=initial_script.replaceAll("\n"," ");
+                                String final_script = initial_script.replaceAll("\n", " ");
                                 String script = final_script;
-                                String language = "java";
+                                String language = lang;
                                 String versionIndex = "1";
                                 URL url = new URL("https://api.jdoodle.com/v1/execute/");
                                 URLConnection connection = url.openConnection();
-                                HttpURLConnection http = (HttpURLConnection)connection;
+                                HttpURLConnection http = (HttpURLConnection) connection;
                                 http.setDoOutput(true);
                                 http.setRequestMethod("POST");
                                 connection.setRequestProperty("Content-Type", "application/json");
