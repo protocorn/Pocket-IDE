@@ -46,7 +46,6 @@ public class MainActivity extends AppCompatActivity {
     NumberAdapter numberAdapter;
     int initial_line_count = 1, final_line_count;
     String filename;
-
     Button compile;
     EditText editText;
     TextView output, FileName;
