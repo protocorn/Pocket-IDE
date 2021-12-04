@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
     Button compile;
     EditText editText;
     TextView output, FileName;
-    String lang="",path_name="";
+    String lang="",path_name="",version="";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,12 +67,15 @@ public class MainActivity extends AppCompatActivity {
         if (filename.contains(".java")) {
             lang = "java";
             path_name="JavaPrograms";
+            version="1";
         } else if (filename.contains(".cpp")) {
-            lang = "c++";
+            lang = "cpp";
             path_name="C++Programs";
+            version="2";
         } else {
             lang = "c";
             path_name="CPrograms";
+            version="2";
         }
 
         countlist = new ArrayList<>();
@@ -151,9 +154,10 @@ public class MainActivity extends AppCompatActivity {
                                 String clientId = "1d9915a673520f1acdc941be6d0fbf38"; //Replace with your client ID
                                 String clientSecret = "59e56a3021e82d94a8667712b3e597ab4d141fde197df2073e52b27286de32fb"; //Replace with your client Secret
                                 String final_script = initial_script.replaceAll("\n", " ");
+                                final_script=initial_script.replaceAll("\"","\\\\"+"\"");
                                 String script = final_script;
                                 String language = lang;
-                                String versionIndex = "1";
+                                String versionIndex = version;
                                 URL url = new URL("https://api.jdoodle.com/v1/execute/");
                                 URLConnection connection = url.openConnection();
                                 HttpURLConnection http = (HttpURLConnection) connection;
