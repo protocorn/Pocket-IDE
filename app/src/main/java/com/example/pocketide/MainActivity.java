@@ -95,8 +95,16 @@ public class MainActivity extends AppCompatActivity {
             BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
             StringBuilder stringBuilder = new StringBuilder();
 
+            int c_line=0;
+
             while ((line2 = bufferedReader.readLine()) != null) {
-                stringBuilder.append(line2);
+                if(c_line==0){
+                    stringBuilder.append(line2);
+                    c_line=1;
+                }
+                else {
+                    stringBuilder.append("\n" + line2);
+                }
             }
             fileInputStream.close();
             line2 = stringBuilder.toString();
