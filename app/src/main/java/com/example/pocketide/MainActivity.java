@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
     NumberAdapter numberAdapter;
     int initial_line_count = 1, final_line_count;
     String filename;
-    Button compile;
+    Button compile,ClearScreen;
     EditText editText;
     TextView output, FileName;
     String lang="",path_name="",version="";
@@ -61,6 +61,7 @@ public class MainActivity extends AppCompatActivity {
         compile = findViewById(R.id.compile);
         output = findViewById(R.id.output);
         FileName = findViewById(R.id.file_nm);
+        ClearScreen = findViewById(R.id.clr_scr);
 
         FileName.setText(filename);
 
@@ -238,6 +239,13 @@ public class MainActivity extends AppCompatActivity {
                     countlist.remove(String.valueOf(initial_line_count));
                     numberAdapter.notifyDataSetChanged();
                 }
+            }
+        });
+
+        ClearScreen.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                output.setText("");
             }
         });
     }
